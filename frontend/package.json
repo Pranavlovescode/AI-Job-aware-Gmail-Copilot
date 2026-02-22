@@ -1,0 +1,29 @@
+{
+  "name": "gmail-copilot-extension",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:ext": "vite build --watch",
+    "build:ext": "vite build",
+    "build:content": "vite build --config vite.content.config.ts",
+    "build": "npm run build:ext && npm run build:content",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "@types/chrome": "^0.0.305",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.9.2",
+    "vite": "^5.4.11"
+  }
+}

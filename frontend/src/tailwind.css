@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+}
+
+@layer utilities {
+  .copilot-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #b8cbe4 transparent;
+  }
+
+  .copilot-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .copilot-scroll::-webkit-scrollbar-thumb {
+    background: #b8cbe4;
+    border-radius: 999px;
+  }
+}

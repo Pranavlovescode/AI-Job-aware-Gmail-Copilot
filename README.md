@@ -55,12 +55,27 @@ API endpoints:
 
 ## Frontend Setup (Chrome Extension)
 
+Frontend stack: **React + Vite + TypeScript + Tailwind CSS**.
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+For local UI iteration:
+
+```bash
+npm run dev
+```
+
 1. Open Chrome -> `chrome://extensions`
 2. Enable **Developer mode**
 3. Click **Load unpacked**
-4. Select the `frontend/` directory
+4. Select the `frontend/dist` directory
 5. Open Gmail (`https://mail.google.com`) and open an email thread
 6. Use the right-side Copilot panel
+7. Open `Dashboard` from the panel (or extension options page) to manage job applications
 
 ## Notes
 

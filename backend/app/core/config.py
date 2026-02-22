@@ -14,7 +14,9 @@ class Settings(BaseSettings):
     app_env: str = "dev"
     api_prefix: str = "/api/v1"
 
-    cors_origins: str = "http://localhost:3000,chrome-extension://*"
+    cors_origins: str = (
+        "http://localhost:3000,http://127.0.0.1:3000,https://mail.google.com"
+    )
     database_url: str = Field(
         default="sqlite:///./test.db",
         validation_alias=AliasChoices(
