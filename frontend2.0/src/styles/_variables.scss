@@ -1,0 +1,41 @@
+// ─── Brand Colors (slateBrand palette from Tailwind config) ───
+$slate-50: #f7f9fc;
+$slate-100: #eef3fb;
+$slate-200: #dbe7f5;
+$slate-300: #bdd1ea;
+$slate-700: #2b405f;
+$slate-900: #101d2f;
+
+// ─── Semantic Colors ───
+$emerald-100: #d1fae5;
+$emerald-700: #047857;
+$blue-100: #dbeafe;
+$blue-200: #bfdbfe;
+$blue-700: #1d4ed8;
+$amber-100: #fef3c7;
+$amber-200: #fde68a;
+$amber-700: #b45309;
+$rose-50: #fff1f2;
+$rose-100: #ffe4e6;
+$rose-200: #fecdd3;
+$rose-700: #be123c;
+
+// ─── Typography ───
+$font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+// ─── Shadows ───
+$shadow-panel: 0 22px 40px rgba(16, 29, 47, 0.18);
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+// ─── Radii ───
+$radius-lg: 0.5rem;
+$radius-xl: 0.75rem;
+$radius-2xl: 1rem;
+$radius-full: 9999px;
+
+// ─── Z-index ───
+$z-max: 2147483647;
+
+// ─── Breakpoints ───
+$bp-sm: 640px;
+$bp-md: 768px;

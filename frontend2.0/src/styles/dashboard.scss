@@ -1,0 +1,232 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: $slate-50;
+  font-family: $font-family;
+}
+
+// ─── Full page dashboard ───
+.dashboard {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, $slate-50, $slate-100, #fff);
+  padding: 2rem 1rem;
+  color: $slate-900;
+  font-family: $font-family;
+
+  @include md {
+    padding: 2rem;
+  }
+}
+
+.dashboard__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+// ─── Header ───
+.dashboard-header {
+  margin-bottom: 1.5rem;
+  border-radius: $radius-2xl;
+  border: 1px solid $slate-200;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  box-shadow: $shadow-sm;
+  backdrop-filter: blur(8px);
+
+  &__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: $slate-700;
+  }
+
+  &__title {
+    margin-top: 0.5rem;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+
+  &__subtitle {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: $slate-700;
+  }
+}
+
+.btn-refresh {
+  @include btn-primary;
+  background: $slate-900;
+}
+
+// ─── Filters row ───
+.dashboard-filters {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+
+  @include md {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  label {
+    display: block;
+  }
+
+  &__label {
+    @include label-text;
+    font-size: 0.75rem;
+  }
+
+  &__input,
+  &__select {
+    @include input-base;
+  }
+}
+
+// ─── Metrics row ───
+.dashboard-metrics {
+  margin-bottom: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+
+  @include sm {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.metric-card {
+  border-radius: $radius-xl;
+  border: 1px solid $slate-200;
+  background: #fff;
+  padding: 1rem;
+
+  &__label {
+    @include label-text;
+    font-size: 0.75rem;
+  }
+
+  &__value {
+    margin-top: 0.5rem;
+    font-size: 1.875rem;
+    font-weight: 800;
+  }
+}
+
+// ─── Error ───
+.dashboard-error {
+  margin-bottom: 1rem;
+  border-radius: $radius-xl;
+  border: 1px solid $rose-200;
+  background: $rose-50;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: $rose-700;
+}
+
+// ─── Empty state ───
+.dashboard-empty {
+  border-radius: $radius-xl;
+  border: 1px solid $slate-200;
+  background: #fff;
+  padding: 1.5rem;
+  text-align: center;
+  color: $slate-700;
+}
+
+// ─── Job cards list ───
+.dashboard-jobs {
+  display: grid;
+  gap: 1rem;
+}
+
+.job-card {
+  border-radius: $radius-xl;
+  border: 1px solid $slate-200;
+  background: #fff;
+  padding: 1.25rem;
+  box-shadow: $shadow-sm;
+
+  &__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__role {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  &__company {
+    font-size: 0.875rem;
+    color: $slate-700;
+  }
+
+  &__status-badge {
+    @include badge($slate-100, $slate-700);
+  }
+
+  &__details {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: $slate-700;
+
+    @include md {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__detail-label {
+    display: block;
+    @include label-text;
+    font-size: 0.75rem;
+  }
+
+  &__controls {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.75rem;
+
+    @include md {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    label {
+      display: block;
+    }
+  }
+
+  &__control-label {
+    @include label-text;
+    font-size: 0.75rem;
+  }
+
+  &__select,
+  &__input {
+    @include input-base;
+  }
+}

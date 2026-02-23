@@ -1,0 +1,97 @@
+@use "variables" as *;
+
+// ─── Responsive ───
+@mixin md {
+  @media (min-width: $bp-md) {
+    @content;
+  }
+}
+@mixin sm {
+  @media (min-width: $bp-sm) {
+    @content;
+  }
+}
+
+// ─── Badge ───
+@mixin badge($bg, $color) {
+  display: inline-block;
+  border-radius: $radius-full;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: $bg;
+  color: $color;
+}
+
+// ─── Card ───
+@mixin card {
+  border-radius: $radius-xl;
+  border: 1px solid $slate-200;
+  background: #fff;
+  padding: 0.75rem;
+}
+
+// ─── Input ───
+@mixin input-base {
+  height: 2.5rem;
+  width: 100%;
+  border-radius: $radius-lg;
+  border: 1px solid $slate-300;
+  background: #fff;
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+  &:focus {
+    box-shadow: 0 0 0 2px $blue-200;
+  }
+}
+
+// ─── Button ───
+@mixin btn-primary {
+  border-radius: $radius-lg;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin btn-secondary {
+  border-radius: $radius-lg;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $slate-700;
+  background: #fff;
+  border: 1px solid $slate-300;
+  cursor: pointer;
+}
+
+// ─── Label / Tracker ───
+@mixin label-text {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $slate-700;
+}
+
+// ─── Custom scroll ───
+@mixin copilot-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #b8cbe4 transparent;
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #b8cbe4;
+    border-radius: 999px;
+  }
+}

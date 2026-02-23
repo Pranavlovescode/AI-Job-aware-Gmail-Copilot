@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "AI Job-Aware Gmail Copilot",
+  "version": "0.2.0",
+  "description": "Agentic AI copilot for Gmail with multi-agent analysis and draft support.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "http://localhost:8000/*",
+    "http://127.0.0.1:8000/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "options_page": "dashboard.html",
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

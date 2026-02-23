@@ -26,24 +26,53 @@ class JobDashboardExtractionAgent:
                     return value
         return ""
 
+    # Words that should never be returned as a company name
+    _COMPANY_STOPWORDS = {
+        "the", "this", "that", "best", "your", "our", "their", "team",
+        "dear", "hello", "hi", "hey", "please", "thanks", "regarding",
+        "re", "fwd", "fw", "no-reply", "noreply",
+    }
+
+    _FREE_EMAIL_DOMAINS = {
+        "gmail", "yahoo", "outlook", "hotmail", "live", "msn", "aol",
+        "icloud", "protonmail", "zoho", "yandex", "mail", "inbox",
+    }
+
+    def _is_plausible_company(self, name: str) -> bool:
+        """Reject single common English words that are clearly not company names."""
+        stripped = name.strip()
+        if not stripped or len(stripped) < 2:
+            return False
+        return stripped.lower() not in self._COMPANY_STOPWORDS
+
     def _extract_company(self, subject: str, text: str, sender: str) -> str:
-        from_patterns = [
-            r"\bfrom\s+([A-Z][A-Za-z0-9&\-]*(?:\s+[A-Z][A-Za-z0-9&\-]*){0,4})\b",
-            r"\bat\s+([A-Z][A-Za-z0-9&\-]*(?:\s+[A-Z][A-Za-z0-9&\-]*){0,4})\b",
-            r"\bjoin\s+([A-Z][A-Za-z0-9&\-]*(?:\s+[A-Z][A-Za-z0-9&\-]*){0,4})\b",
-            r"\bwith\s+([A-Z][A-Za-z0-9&\-]*(?:\s+[A-Z][A-Za-z0-9&\-]*){0,4})\b",
+        # Tier 1 — explicit job-context patterns in the body (case-insensitive).
+        # Use a word-boundary + lookahead to stop before role-like keywords.
+        stop = r"(?=\s+(?:as|for|role|position|opening)\b|\s*$)"
+        body_patterns = [
+            rf"\bfrom\s+([A-Z][A-Za-z0-9&\-]*(?:\s+[A-Z][A-Za-z0-9&\-]*){{0,3}}){stop}",
+            rf"\bat\s+([A-Z][A-Za-z0-9&\-]*(?:\s+[A-Z][A-Za-z0-9&\-]*){{0,3}}){stop}",
+            rf"\bjoin\s+([A-Z][A-Za-z0-9&\-]*(?:\s+[A-Z][A-Za-z0-9&\-]*){{0,3}}){stop}",
+            rf"\bwith\s+([A-Z][A-Za-z0-9&\-]*(?:\s+[A-Z][A-Za-z0-9&\-]*){{0,3}}){stop}",
         ]
-        company = self._first_match(text, from_patterns)
-        if company:
+        # Run body patterns **case-sensitive** so we only grab proper-noun phrases
+        company = self._first_match(text, body_patterns, flags=0)
+        if company and self._is_plausible_company(company):
             return self._clean_value(company)
 
-        subject_match = re.search(r"^\s*([A-Za-z0-9&][A-Za-z0-9&\-. ]{1,50})\s*[-–:|]", subject)
-        if subject_match:
+        # Tier 2 — leading portion of the subject before a separator
+        subject_match = re.search(
+            r"^\s*(?:(?:Re|Fwd?)\s*:\s*)*([A-Za-z0-9&][A-Za-z0-9&\-.]{1,50})\s*[-–:|]",
+            subject,
+            re.IGNORECASE,
+        )
+        if subject_match and self._is_plausible_company(subject_match.group(1)):
             return self._clean_value(subject_match.group(1))
 
+        # Tier 3 — infer from sender email domain
         if "@" in sender:
             domain = sender.split("@", 1)[1].split(".", 1)[0]
-            if domain and domain.lower() not in {"gmail", "yahoo", "outlook", "hotmail"}:
+            if domain and domain.lower() not in self._FREE_EMAIL_DOMAINS:
                 return self._clean_value(domain.replace("-", " ").title())
         return ""
 

@@ -1,0 +1,352 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// ─── Copilot toggle button ───
+.copilot-toggle {
+  position: fixed;
+  right: 1.25rem;
+  top: 5rem;
+  z-index: $z-max;
+  border-radius: $radius-xl;
+  border: 1px solid $slate-300;
+  background: #fff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $slate-900;
+  box-shadow: $shadow-panel;
+  cursor: pointer;
+  font-family: $font-family;
+}
+
+// ─── Sidebar wrapper ───
+.copilot-sidebar {
+  position: fixed;
+  right: 1.25rem;
+  top: 5rem;
+  z-index: $z-max;
+  width: 392px;
+  max-width: calc(100vw - 20px);
+  font-family: $font-family;
+  color: $slate-900;
+}
+
+.copilot-panel {
+  overflow: hidden;
+  border-radius: $radius-2xl;
+  border: 1px solid $slate-200;
+  background: #fff;
+  box-shadow: $shadow-panel;
+}
+
+// ─── Header ───
+.copilot-header {
+  background: linear-gradient(to right, $emerald-100, $slate-100, $blue-100);
+  padding: 0.75rem 1rem;
+
+  &__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  &__tag {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: $slate-700;
+  }
+
+  &__title {
+    margin-top: 0.25rem;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+
+  &__close {
+    border-radius: $radius-lg;
+    border: 1px solid $slate-300;
+    background: #fff;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: $slate-700;
+    cursor: pointer;
+    &:hover {
+      background: $slate-50;
+    }
+  }
+
+  &__subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: $slate-700;
+  }
+}
+
+// ─── Config bar (tone selector) ───
+.copilot-config {
+  border-top: 1px solid $slate-200;
+  border-bottom: 1px solid $slate-200;
+  background: $slate-50;
+  padding: 0.75rem;
+
+  &__label {
+    @include label-text;
+  }
+
+  &__select {
+    @include input-base;
+    height: 2.25rem;
+  }
+}
+
+// ─── Content area ───
+.copilot-content {
+  @include copilot-scroll;
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  background: $slate-50;
+  padding: 0.75rem;
+}
+
+// ─── Analyze card ───
+.analyze-card {
+  @include card;
+//   margin-bottom: 0.75rem;
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  &__desc {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: $slate-700;
+  }
+
+  &__actions {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+}
+
+.btn-analyze {
+  @include btn-primary;
+  background: linear-gradient(to right, $emerald-700, $blue-700);
+}
+
+.btn-outline {
+  @include btn-secondary;
+}
+
+// ─── Error banner ───
+.error-banner {
+  margin-bottom: 0.75rem;
+  border-radius: $radius-xl;
+  border: 1px solid $rose-200;
+  background: $rose-50;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  color: $rose-700;
+}
+
+// ─── Result grid (classification + priority) ───
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.result-cell {
+  @include card;
+
+  &__label {
+    @include label-text;
+    font-size: 0.75rem;
+  }
+
+  &__badges {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
+.badge-emerald {
+  @include badge($emerald-100, $emerald-700);
+}
+.badge-slate {
+  @include badge($slate-100, $slate-700);
+}
+
+// Priority badges
+.badge-priority--high {
+  @include badge($rose-100, $rose-700);
+}
+.badge-priority--medium {
+  @include badge($amber-100, $amber-700);
+}
+.badge-priority--low {
+  @include badge($emerald-100, $emerald-700);
+}
+
+// ─── Info card (summary, action plan, job signals) ───
+.info-card {
+  @include card;
+  margin-bottom: 0.75rem;
+
+  &__title {
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  &__text {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: $slate-700;
+  }
+
+  &__bold {
+    font-weight: 600;
+  }
+
+  &__list {
+    margin-top: 0.5rem;
+    padding-left: 1.25rem;
+    list-style: disc;
+    font-size: 0.875rem;
+    color: $slate-700;
+    li + li {
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+// ─── Scam card ───
+.scam-card {
+  @include card;
+  margin-bottom: 0.75rem;
+
+  &--high {
+    border-color: $rose-200;
+    background: $rose-50;
+  }
+  &--medium {
+    border-color: $amber-200;
+    background: #fffbeb;
+  }
+  &--low {
+    border-color: $emerald-100;
+    background: #ecfdf5;
+  }
+}
+
+// ─── Draft reply ───
+.draft-card {
+  @include card;
+
+  &__pre {
+    @include copilot-scroll;
+    margin-top: 0.5rem;
+    max-height: 11rem;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    border-radius: $radius-lg;
+    border: 1px solid $slate-200;
+    background: $slate-50;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: $slate-900;
+  }
+
+  &__actions {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
+.btn-dark {
+  @include btn-primary;
+  background: $slate-900;
+}
+
+// ─── Dashboard mini-view (inside content script) ───
+.dashboard-mini {
+  @include card;
+
+  &__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+
+  &__desc {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: $slate-700;
+  }
+
+  &__empty {
+    margin-top: 0.75rem;
+    border-radius: $radius-lg;
+    border: 1px solid $slate-200;
+    background: $slate-50;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    color: $slate-700;
+  }
+
+  &__list {
+    @include copilot-scroll;
+    margin-top: 0.75rem;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.job-mini-card {
+  border-radius: $radius-lg;
+  border: 1px solid $slate-200;
+  background: $slate-50;
+  padding: 0.75rem;
+
+  &__role {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $slate-900;
+  }
+  &__company {
+    font-size: 0.875rem;
+    color: $slate-700;
+  }
+  &__meta {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: $slate-700;
+  }
+}
