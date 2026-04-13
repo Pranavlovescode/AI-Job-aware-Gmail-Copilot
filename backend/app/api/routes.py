@@ -11,10 +11,9 @@ from app.models.schemas import (
     JobDashboardItem,
     JobDashboardResponse,
 )
-from app.services.orchestrator import AgentOrchestrator
+from app.services.orchestrator import analyze_email_orchestrator
 
 router = APIRouter()
-orchestrator = AgentOrchestrator()
 
 
 @router.get("/health", response_model=HealthResponse)
@@ -33,7 +32,7 @@ def health() -> HealthResponse:
 
 @router.post("/analyze", response_model=AnalyzeEmailResponse)
 async def analyze_email(payload: EmailInput, db: Session = Depends(get_db)) -> AnalyzeEmailResponse:
-    result = await orchestrator.analyze_email(db, payload)
+    result = await analyze_email_orchestrator(db, payload)
     return AnalyzeEmailResponse(result=result)
 
 

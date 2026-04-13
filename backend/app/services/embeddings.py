@@ -5,17 +5,13 @@ from langchain_openai import OpenAIEmbeddings
 from app.core.config import get_settings
 
 
-class EmbeddingService:
+def get_embeddings() -> Embeddings:
     """
     LangChain embedding provider.
     - Uses OpenAI embeddings when API key is configured.
     - Falls back to FakeEmbeddings for local/dev deterministic behavior.
     """
-
-    def __init__(self) -> None:
-        self.settings = get_settings()
-
-    def get_embeddings(self) -> Embeddings:
-        if self.settings.openai_api_key:
-            return OpenAIEmbeddings(api_key=self.settings.openai_api_key)
-        return FakeEmbeddings(size=256)
+    settings = get_settings()
+    if settings.openai_api_key:
+        return OpenAIEmbeddings(api_key=settings.openai_api_key)
+    return FakeEmbeddings(size=256)

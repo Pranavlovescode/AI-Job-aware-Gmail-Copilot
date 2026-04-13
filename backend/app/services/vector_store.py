@@ -14,11 +14,10 @@ class MemoryMatch:
     score: float
 
 
-class LangChainVectorStore:
+class SimpleVectorStore:
     """
-    Thin adapter over LangChain InMemoryVectorStore to keep the agent interface clean.
+    A simple wrapper for InMemoryVectorStore.
     """
-
     def __init__(self, embeddings: Embeddings) -> None:
         self._store = InMemoryVectorStore(embedding=embeddings)
         self._ids: set[str] = set()
@@ -44,3 +43,10 @@ class LangChainVectorStore:
                 )
             )
         return result
+
+
+def get_vector_store(embeddings: Embeddings) -> SimpleVectorStore:
+    """
+    Factory function for the vector store.
+    """
+    return SimpleVectorStore(embeddings)
