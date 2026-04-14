@@ -5,6 +5,7 @@ import "./styles/content.scss";
 
 const DEFAULT_API_BASE = "http://127.0.0.1:8000/api/v1";
 const ROOT_ID = "gmail-copilot-root";
+const TOGGLE_ICON = chrome.runtime.getURL("copilot-icon.png");
 
 type Tone = "Formal" | "Friendly" | "Concise" | "Confident" | "Negotiation Mode";
 
@@ -66,12 +67,6 @@ function priorityModifier(label: string): string {
   if (val === "critical" || val === "high") return "badge-priority--high";
   if (val === "medium") return "badge-priority--medium";
   return "badge-priority--low";
-}
-
-function scamModifier(score: number): string {
-  if (score >= 70) return "scam-card--high";
-  if (score >= 35) return "scam-card--medium";
-  return "scam-card--low";
 }
 
 function buildAnalyzeUrl(rawInput: string): string {
@@ -141,6 +136,7 @@ function App(): React.JSX.Element {
   const [isOpen, setIsOpen] = useState(true);
   const [view, setView] = useState<"assistant" | "dashboard">("assistant");
   const [dashboardJobs, setDashboardJobs] = useState<JobDashboardItem[]>([]);
+  const [showApiConfig, setShowApiConfig] = useState(false);
 
   const draft = result?.draft_reply ?? "";
   const analyzeUrl = useMemo(() => buildAnalyzeUrl(apiBase), [apiBase]);
@@ -160,7 +156,7 @@ function App(): React.JSX.Element {
       setResult(data.result);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error.";
-      setError(`${message} Verify backend availability on http://127.0.0.1:8000.`);
+      setError(`${message} Verify backend on http://127.0.0.1:8000.`);
       setResult(null);
     } finally {
       setLoading(false);
@@ -197,23 +193,36 @@ function App(): React.JSX.Element {
 
   return (
     <div>
-      {/* Floating toggle */}
+      {/* ── Floating image toggle ── */}
       {!isOpen && (
-        <button className="copilot-toggle" onClick={() => setIsOpen(true)}>
-          Open Copilot
+        <button
+          className="copilot-toggle"
+          onClick={() => setIsOpen(true)}
+          title="Open AI Job Copilot"
+          aria-label="Open AI Job Copilot"
+        >
+          <img src={TOGGLE_ICON} alt="AI Copilot" />
         </button>
       )}
 
-      {/* Sidebar panel */}
+      {/* ── Sidebar panel ── */}
       {isOpen && (
         <div className="copilot-sidebar">
           <div className="copilot-panel">
+
             {/* Header */}
             <header className="copilot-header">
               <div className="copilot-header__top">
-                <div>
-                  <p className="copilot-header__tag">AI Job Copilot</p>
-                  <h2 className="copilot-header__title">Gmail Assistant</h2>
+                <div className="copilot-header__branding">
+                  <img
+                    className="copilot-header__logo"
+                    src={TOGGLE_ICON}
+                    alt="Copilot logo"
+                  />
+                  <div>
+                    <p className="copilot-header__tag">AI Job Copilot</p>
+                    <h2 className="copilot-header__title">Gmail Assistant</h2>
+                  </div>
                 </div>
                 <button
                   className="copilot-header__close"
@@ -221,18 +230,56 @@ function App(): React.JSX.Element {
                   aria-label="Close copilot"
                   title="Close"
                 >
-                  Close
+                  ✕
                 </button>
               </div>
               <p className="copilot-header__subtitle">
-                Drafts are generated only. Nothing is auto-sent.
+                Drafts only — nothing is auto-sent
               </p>
             </header>
+
+            {/* Nav tabs */}
+            <nav className="copilot-nav">
+              <button
+                className={`copilot-nav__tab${view === "assistant" ? " copilot-nav__tab--active" : ""}`}
+                onClick={() => setView("assistant")}
+              >
+                ✦ Assistant
+              </button>
+              <button
+                className={`copilot-nav__tab${view === "dashboard" ? " copilot-nav__tab--active" : ""}`}
+                onClick={openDashboard}
+              >
+                ⬡ Dashboard
+              </button>
+              <button
+                className={`copilot-nav__tab${showApiConfig ? " copilot-nav__tab--active" : ""}`}
+                onClick={() => setShowApiConfig(!showApiConfig)}
+              >
+                ⚙ Config
+              </button>
+            </nav>
+
+            {/* API Config drawer */}
+            {showApiConfig && (
+              <div className="api-config">
+                <label>
+                  <span className="api-config__label">API Base URL</span>
+                  <input
+                    type="text"
+                    className="api-config__input"
+                    value={apiBase}
+                    onChange={(e) => setApiBase(e.target.value)}
+                    placeholder="http://127.0.0.1:8000/api/v1"
+                  />
+                </label>
+              </div>
+            )}
 
             {/* Tone selector */}
             <div className="copilot-config">
               <label>
-                <span className="copilot-config__label">Tone</span>
+                <span className="copilot-config__label">Response Tone</span>
                 <select
                   className="copilot-config__select"
                   value={tone}
@@ -249,36 +296,41 @@ function App(): React.JSX.Element {
 
             {/* Scrollable content */}
             <section className="copilot-content">
+
               {/* Analyze card */}
-              <div className="analyze-card">
-                <h3 className="analyze-card__title">Analyze Current Email</h3>
-                <p className="analyze-card__desc">
-                  Open a Gmail thread and run the pipeline for category, priority,
-                  scam risk, memory context, and draft generation.
-                </p>
-                <div className="analyze-card__actions">
-                  <button
-                    className="btn-analyze"
-                    onClick={analyzeCurrentEmail}
-                    disabled={loading}
-                  >
-                    {loading ? "Analyzing..." : "Analyze Email"}
-                  </button>
-                  <button className="btn-outline" onClick={openDashboard}>
-                    {loading && view === "dashboard" ? "Loading..." : "Open Dashboard"}
-                  </button>
-                  {view === "dashboard" && (
-                    <button className="btn-outline" onClick={() => setView("assistant")}>
-                      Back
+              {view === "assistant" && (
+                <div className="analyze-card">
+                  <div className="analyze-card__header">
+                    <span className="analyze-card__icon">✦</span>
+                    <h3 className="analyze-card__title">Analyze Email</h3>
+                  </div>
+                  <p className="analyze-card__desc">
+                    Open a Gmail thread then run the AI pipeline — category, priority, job signals, and draft reply.
+                  </p>
+                  <div className="analyze-card__actions">
+                    <button
+                      className="btn-analyze"
+                      onClick={analyzeCurrentEmail}
+                      disabled={loading}
+                    >
+                      {loading ? "Analyzing…" : "✦ Analyze Email"}
                     </button>
-                  )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Error */}
               {error && <div className="error-banner">{error}</div>}
 
-              {/* Assistant results */}
+              {/* Loading spinner */}
+              {loading && (
+                <div className="loading-state">
+                  <div className="loading-state__spinner" />
+                  <p className="loading-state__text">Running AI pipeline…</p>
+                </div>
+              )}
+
+              {/* ── Assistant results ── */}
               {!loading && view === "assistant" && result && (
                 <>
                   {/* Classification + Priority */}
@@ -286,19 +338,15 @@ function App(): React.JSX.Element {
                     <article className="result-cell">
                       <p className="result-cell__label">Classification</p>
                       <div className="result-cell__badges">
-                        <span className="badge-emerald">
-                          {result.classification.category}
-                        </span>
-                        <span className="badge-slate">
-                          {result.classification.subtype}
-                        </span>
+                        <span className="badge-emerald">{result.classification.category}</span>
+                        <span className="badge-slate">{result.classification.subtype}</span>
                       </div>
                     </article>
                     <article className="result-cell">
                       <p className="result-cell__label">Priority</p>
                       <div className="result-cell__badges">
                         <span className={priorityModifier(result.priority.label)}>
-                          {result.priority.label} ({result.priority.score})
+                          {result.priority.label} · {result.priority.score}
                         </span>
                         <span className="badge-slate">
                           {result.priority.action_required ? "Action needed" : "FYI"}
@@ -309,17 +357,21 @@ function App(): React.JSX.Element {
 
                   {/* AI Summary */}
                   <article className="info-card">
-                    <p className="info-card__title">AI Summary</p>
+                    <div className="info-card__header">
+                      <span className="info-card__icon">◈</span>
+                      <p className="info-card__title">AI Summary</p>
+                    </div>
                     <p className="info-card__text">{result.ai_summary}</p>
                   </article>
 
                   {/* Action Plan */}
                   <article className="info-card">
-                    <p className="info-card__title">Action Plan</p>
+                    <div className="info-card__header">
+                      <span className="info-card__icon">⟶</span>
+                      <p className="info-card__title">Action Plan</p>
+                    </div>
                     <p className="info-card__bold">{result.action_decision.action}</p>
-                    <p className="info-card__text">
-                      {result.action_decision.reasoning}
-                    </p>
+                    <p className="info-card__text">{result.action_decision.reasoning}</p>
                     {result.priority.reasons.length > 0 && (
                       <ul className="info-card__list">
                         {result.priority.reasons.map((reason) => (
@@ -329,76 +381,69 @@ function App(): React.JSX.Element {
                     )}
                   </article>
 
-                  {/* Scam detection */}
-                  {/* <article className={`scam-card ${scamModifier(result.scam_detection.risk_score)}`}>
-                    <p className="info-card__title">Scam Risk</p>
-                    <p className="info-card__text">
-                      Risk score: <strong>{result.scam_detection.risk_score}/100</strong>
-                    </p>
-                    {result.scam_detection.flags.length > 0 && (
-                      <ul className="info-card__list">
-                        {result.scam_detection.flags.map((flag) => (
-                          <li key={flag}>{flag}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </article> */}
-
                   {/* Job Signals */}
-                  <article className="info-card">
-                    <p className="info-card__title">Job Signals</p>
-                    <p className="info-card__text">
-                      {result.job_extraction.is_job_related
-                        ? "Job-related email detected."
-                        : "Not job-related."}
-                      <br />
-                      <strong>
-                        {result.job_extraction.company || "Unknown company"}
-                      </strong>{" "}
-                      · {result.job_extraction.role || "Unknown role"}
-                      <br />
-                      Stage: {result.job_extraction.stage || "Applied"}
-                      <br />
-                      Next action:{" "}
-                      {result.job_extraction.next_action || "Track and monitor"}
-                    </p>
+                  <article className="job-card">
+                    <p className="job-card__label">Job Signals</p>
+                    {result.job_extraction.is_job_related ? (
+                      <p className="job-card__detected">Job-related email detected</p>
+                    ) : null}
+                    <div className="job-card__row">
+                      <strong>{result.job_extraction.company || "Unknown company"}</strong>
+                      <span className="dot">·</span>
+                      <span>{result.job_extraction.role || "Unknown role"}</span>
+                    </div>
+                    <div className="job-card__row">
+                      <span>Next:</span>
+                      <span>{result.job_extraction.next_action || "Track and monitor"}</span>
+                    </div>
+                    <span className="job-card__stage-badge">
+                      {result.job_extraction.stage || "Applied"}
+                    </span>
                   </article>
 
                   {/* Draft Reply */}
                   <article className="draft-card">
-                    <p className="info-card__title">Draft Reply</p>
-                    <pre className="draft-card__pre">
-                      {draft || "No draft generated."}
-                    </pre>
+                    <div className="draft-card__title-row">
+                      <div className="info-card__header" style={{ marginBottom: 0 }}>
+                        <span className="info-card__icon">✉</span>
+                        <p className="info-card__title">Draft Reply</p>
+                      </div>
+                    </div>
+                    <pre className="draft-card__pre">{draft || "No draft generated."}</pre>
                     <div className="draft-card__actions">
                       <button
-                        className="btn-dark"
+                        className="btn-insert"
                         onClick={() => {
                           const message = insertDraftIntoReply(draft);
                           if (message) setError(message);
                         }}
                       >
-                        Insert Reply
+                        ↩ Insert Reply
                       </button>
                       <button className="btn-outline" onClick={copyDraft}>
-                        Copy Draft
+                        ⎘ Copy Draft
                       </button>
                     </div>
                   </article>
                 </>
               )}
 
-              {/* Dashboard mini view */}
+              {/* ── Dashboard mini view ── */}
               {!loading && view === "dashboard" && (
                 <article className="dashboard-mini">
-                  <p className="dashboard-mini__title">Personal Dashboard</p>
+                  <div className="dashboard-mini__header">
+                    <p className="dashboard-mini__title">Job Pipeline</p>
+                    <span className="dashboard-mini__count">
+                      {dashboardJobs.length} applications
+                    </span>
+                  </div>
                   <p className="dashboard-mini__desc">
-                    Recent job applications from your backend.
+                    Recent applications synced from your backend.
                   </p>
                   {dashboardJobs.length === 0 ? (
-                    <p className="dashboard-mini__empty">
-                      No job applications found.
-                    </p>
+                    <div className="dashboard-mini__empty">
+                      No job applications found yet.
+                    </div>
                   ) : (
                     <div className="dashboard-mini__list">
                       {dashboardJobs.map((job, idx) => (
@@ -406,19 +451,17 @@ function App(): React.JSX.Element {
                           key={`${job.company}-${job.role}-${idx}`}
                           className="job-mini-card"
                         >
-                          <p className="job-mini-card__role">
-                            {job.role || "Unknown role"}
-                          </p>
-                          <p className="job-mini-card__company">
-                            {job.company || "Unknown company"}
-                          </p>
+                          <p className="job-mini-card__role">{job.role || "Unknown role"}</p>
+                          <p className="job-mini-card__company">{job.company || "Unknown company"}</p>
                           <p className="job-mini-card__meta">
-                            Stage: {job.current_stage || "Unknown"} | Last contact:{" "}
-                            {formatDate(job.last_contact_date)}
+                            Last contact: {formatDate(job.last_contact_date)}
                           </p>
                           <p className="job-mini-card__meta">
                             Next: {job.next_action || "Track and monitor"}
                           </p>
+                          <span className="job-mini-card__stage">
+                            {job.current_stage || "Unknown"}
+                          </span>
                         </div>
                       ))}
                     </div>

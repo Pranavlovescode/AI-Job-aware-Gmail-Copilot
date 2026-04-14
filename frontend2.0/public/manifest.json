@@ -21,5 +21,11 @@
       "css": ["content.css"],
       "run_at": "document_idle"
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["copilot-icon.png"],
+      "matches": ["https://mail.google.com/*"]
+    }
   ]
 }

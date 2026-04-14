@@ -1,56 +1,126 @@
 @use "variables" as *;
 @use "mixins" as *;
 
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-// ─── Copilot toggle button ───
+// ─── Floating Toggle Button (image-based) ───
 .copilot-toggle {
   position: fixed;
-  right: 1.25rem;
-  top: 5rem;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: $z-max;
+  width: 52px;
+  height: 52px;
   border-radius: $radius-xl;
-  border: 1px solid $slate-300;
-  background: #fff;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: $slate-900;
-  box-shadow: $shadow-panel;
+  border: 2px solid rgba(99, 102, 241, 0.45);
+  background: $grad-dark;
+  box-shadow: $shadow-glow, $shadow-panel;
   cursor: pointer;
-  font-family: $font-family;
+  padding: 0;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.25s ease,
+              border-color 0.25s ease;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: calc(#{$radius-xl} - 2px);
+  }
+
+  &:hover {
+    transform: translateY(-50%) scale(1.12);
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.65), $shadow-panel;
+    border-color: rgba(99, 102, 241, 0.75);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: calc(#{$radius-xl} - 2px);
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
 }
 
 // ─── Sidebar wrapper ───
 .copilot-sidebar {
   position: fixed;
-  right: 1.25rem;
-  top: 5rem;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: $z-max;
-  width: 392px;
-  max-width: calc(100vw - 20px);
+  width: 380px;
+  max-width: calc(100vw - 14px);
   font-family: $font-family;
-  color: $slate-900;
+  color: #e2e8f0;
+  animation: slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
 .copilot-panel {
   overflow: hidden;
   border-radius: $radius-2xl;
-  border: 1px solid $slate-200;
-  background: #fff;
+  border: 1px solid $glass-border;
+  background: $glass-bg;
   box-shadow: $shadow-panel;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
 // ─── Header ───
 .copilot-header {
-  background: linear-gradient(to right, $emerald-100, $slate-100, $blue-100);
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.875rem 0.5rem;
+  background: $grad-header;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  // Decorative gradient blobs
+  &::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -30px;
+    left: 20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
 
   &__top {
     display: flex;
@@ -59,48 +129,119 @@
     gap: 0.5rem;
   }
 
+  &__branding {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__logo {
+    width: 28px;
+    height: 28px;
+    border-radius: $radius-sm;
+    object-fit: cover;
+    border: 1px solid rgba(99,102,241,0.4);
+    flex-shrink: 0;
+  }
+
   &__tag {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: $slate-700;
+    letter-spacing: 0.25em;
+    color: $indigo-400;
   }
 
   &__title {
-    margin-top: 0.25rem;
-    font-size: 26px;
+    margin-top: 0.1rem;
+    font-size: 1.2rem;
     font-weight: 800;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
+    background: $grad-brand;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
   }
 
   &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
     border-radius: $radius-lg;
-    border: 1px solid $slate-300;
-    background: #fff;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: $slate-700;
+    border: 1px solid rgba(99,102,241,0.3);
+    background: rgba(15,23,42,0.5);
+    color: #94a3b8;
     cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
     &:hover {
-      background: $slate-50;
+      background: rgba(99,102,241,0.2);
+      color: #e2e8f0;
+      border-color: rgba(99,102,241,0.5);
     }
   }
 
   &__subtitle {
     margin-top: 0.25rem;
-    font-size: 0.75rem;
-    color: $slate-700;
+    font-size: 0.68rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    &::before {
+      content: "●";
+      color: $emerald-400;
+      font-size: 0.5rem;
+    }
+  }
+}
+
+// ─── Nav tabs ───
+.copilot-nav {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid rgba(99,102,241,0.15);
+  background: rgba(15,23,42,0.3);
+
+  &__tab {
+    flex: 1;
+    padding: 0.3rem 0.5rem;
+    border-radius: $radius-lg;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: $font-family;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.02em;
+
+    &--active {
+      background: rgba(99,102,241,0.2);
+      color: $indigo-400;
+      border: 1px solid rgba(99,102,241,0.3);
+    }
+    &:hover:not(&--active) {
+      background: rgba(255,255,255,0.05);
+      color: #94a3b8;
+    }
   }
 }
 
 // ─── Config bar (tone selector) ───
 .copilot-config {
-  border-top: 1px solid $slate-200;
-  border-bottom: 1px solid $slate-200;
-  background: $slate-50;
-  padding: 0.75rem;
+  border-bottom: 1px solid rgba(99,102,241,0.12);
+  background: rgba(15,23,42,0.2);
+  padding: 0.4rem 0.75rem;
+
+  label { display: block; }
 
   &__label {
     @include label-text;
@@ -108,70 +249,125 @@
 
   &__select {
     @include input-base;
-    height: 2.25rem;
+    height: 2rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236366f1'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    padding-right: 2rem;
   }
 }
 
 // ─── Content area ───
 .copilot-content {
   @include copilot-scroll;
-  max-height: calc(100vh - 260px);
+  max-height: calc(100vh - 220px);
   overflow-y: auto;
-  background: $slate-50;
-  padding: 0.75rem;
+  background: rgba(8, 14, 28, 0.5);
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 // ─── Analyze card ───
 .analyze-card {
   @include card;
-//   margin-bottom: 0.75rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.25rem;
+  }
+
+  &__icon {
+    font-size: 1rem;
+  }
 
   &__title {
-    font-size: 1.25rem;
+    font-size: 0.9rem;
     font-weight: 700;
+    color: #e2e8f0;
   }
 
   &__desc {
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: $slate-700;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    color: #64748b;
+    margin-bottom: 0.5rem;
   }
 
   &__actions {
-    margin-top: 0.75rem;
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     flex-wrap: wrap;
   }
 }
 
 .btn-analyze {
   @include btn-primary;
-  background: linear-gradient(to right, $emerald-700, $blue-700);
+  background: $grad-btn;
+  box-shadow: $shadow-btn;
 }
 
 .btn-outline {
   @include btn-secondary;
 }
 
+// ─── Loading state ───
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 0;
+
+  &__spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(99,102,241,0.15);
+    border-top-color: $indigo-500;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  &__text {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 // ─── Error banner ───
 .error-banner {
-  margin-bottom: 0.75rem;
-  border-radius: $radius-xl;
-  border: 1px solid $rose-200;
-  background: $rose-50;
-  padding: 0.75rem;
-  font-size: 0.875rem;
-  color: $rose-700;
+  border-radius: $radius-lg;
+  border: 1px solid rgba(251,113,133,0.3);
+  background: rgba(190,18,60,0.12);
+  padding: 0.5rem 0.65rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: $rose-400;
+  display: flex;
+  gap: 0.35rem;
+  align-items: flex-start;
+
+  &::before {
+    content: "⚠";
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
 }
 
 // ─── Result grid (classification + priority) ───
 .result-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  gap: 0.4rem;
 }
 
 .result-cell {
@@ -179,174 +375,309 @@
 
   &__label {
     @include label-text;
-    font-size: 0.75rem;
+    font-size: 0.6rem;
   }
 
   &__badges {
-    margin-top: 0.5rem;
+    margin-top: 0.35rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
 }
 
-.badge-emerald {
-  @include badge($emerald-100, $emerald-700);
-}
-.badge-slate {
-  @include badge($slate-100, $slate-700);
-}
+// ─── Badges ───
+.badge-emerald  { @include badge(rgba(52,211,153,0.15), $emerald-400); }
+.badge-slate    { @include badge(rgba(148,163,184,0.12), #94a3b8); }
 
-// Priority badges
-.badge-priority--high {
-  @include badge($rose-100, $rose-700);
-}
-.badge-priority--medium {
-  @include badge($amber-100, $amber-700);
-}
-.badge-priority--low {
-  @include badge($emerald-100, $emerald-700);
-}
+.badge-priority--high   { @include badge(rgba(251,113,133,0.15), $rose-400); }
+.badge-priority--medium { @include badge(rgba(245,158,11,0.15), $amber-500); }
+.badge-priority--low    { @include badge(rgba(52,211,153,0.15), $emerald-400); }
 
-// ─── Info card (summary, action plan, job signals) ───
+// ─── Info card ───
 .info-card {
   @include card;
-  margin-bottom: 0.75rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.3rem;
+  }
+
+  &__icon {
+    font-size: 0.85rem;
+  }
 
   &__title {
-    font-size: 0.875rem;
+    font-size: 0.78rem;
     font-weight: 700;
+    color: #c7d2fe;
+    letter-spacing: 0.01em;
   }
 
   &__text {
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: $slate-700;
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: #94a3b8;
   }
 
   &__bold {
     font-weight: 600;
+    color: #e2e8f0;
+    font-size: 0.78rem;
+    margin-bottom: 0.15rem;
   }
 
   &__list {
-    margin-top: 0.5rem;
-    padding-left: 1.25rem;
-    list-style: disc;
-    font-size: 0.875rem;
-    color: $slate-700;
-    li + li {
-      margin-top: 0.25rem;
+    margin-top: 0.35rem;
+    padding-left: 1rem;
+    list-style: none;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    li {
+      position: relative;
+      padding-left: 0.65rem;
+      &::before {
+        content: "›";
+        position: absolute;
+        left: 0;
+        color: $indigo-400;
+        font-weight: 700;
+      }
     }
   }
 }
 
-// ─── Scam card ───
-.scam-card {
+// ─── Job Signals card ───
+.job-card {
   @include card;
-  margin-bottom: 0.75rem;
+  border-color: rgba(52,211,153,0.2);
+  background: rgba(16,185,129,0.05);
 
-  &--high {
-    border-color: $rose-200;
-    background: $rose-50;
+  &__label {
+    @include label-text;
+    color: $emerald-400;
   }
-  &--medium {
-    border-color: $amber-200;
-    background: #fffbeb;
+
+  &__detected {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: $emerald-400;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    &::before { content: "✓"; }
   }
-  &--low {
-    border-color: $emerald-100;
-    background: #ecfdf5;
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 0.15rem;
+
+    strong {
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    span.dot {
+      color: #475569;
+      font-size: 0.6rem;
+    }
+  }
+
+  &__stage-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.35rem;
+    border-radius: $radius-full;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: rgba(99,102,241,0.15);
+    color: $indigo-400;
+    border: 1px solid rgba(99,102,241,0.25);
   }
 }
 
 // ─── Draft reply ───
 .draft-card {
   @include card;
+  border-color: rgba(59,130,246,0.2);
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.35rem;
+  }
 
   &__pre {
     @include copilot-scroll;
-    margin-top: 0.5rem;
-    max-height: 11rem;
+    max-height: 9rem;
     overflow-y: auto;
     white-space: pre-wrap;
     border-radius: $radius-lg;
-    border: 1px solid $slate-200;
-    background: $slate-50;
-    padding: 0.75rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: $slate-900;
+    border: 1px solid rgba(99,102,241,0.18);
+    background: rgba(15,23,42,0.7);
+    padding: 0.55rem 0.65rem;
+    font-size: 0.72rem;
+    line-height: 1.55;
+    color: #cbd5e1;
+    font-family: "Fira Code", "Cascadia Code", monospace;
   }
 
   &__actions {
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 }
 
 .btn-dark {
   @include btn-primary;
-  background: $slate-900;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1px solid rgba(99,102,241,0.3);
 }
 
-// ─── Dashboard mini-view (inside content script) ───
+.btn-insert {
+  @include btn-primary;
+  background: $grad-btn;
+  box-shadow: $shadow-btn;
+}
+
+// ─── Scam card ───
+.scam-card {
+  @include card;
+  &--high   { border-color: rgba(251,113,133,0.4); background: rgba(190,18,60,0.08); }
+  &--medium { border-color: rgba(245,158,11,0.3);  background: rgba(180,83,9,0.08); }
+  &--low    { border-color: rgba(52,211,153,0.2);  background: rgba(16,185,129,0.05); }
+}
+
+// ─── Dashboard mini-view ───
 .dashboard-mini {
   @include card;
 
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+  }
+
   &__title {
-    font-size: 1.125rem;
+    font-size: 0.85rem;
     font-weight: 700;
+    color: #e2e8f0;
+  }
+
+  &__count {
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(99,102,241,0.2);
+    color: $indigo-400;
+    border-radius: $radius-full;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid rgba(99,102,241,0.25);
   }
 
   &__desc {
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    color: $slate-700;
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-bottom: 0.4rem;
   }
 
   &__empty {
-    margin-top: 0.75rem;
     border-radius: $radius-lg;
-    border: 1px solid $slate-200;
-    background: $slate-50;
-    padding: 0.75rem;
-    font-size: 0.875rem;
-    color: $slate-700;
+    border: 1px dashed rgba(99,102,241,0.2);
+    background: rgba(15,23,42,0.3);
+    padding: 1rem;
+    font-size: 0.75rem;
+    color: #475569;
+    text-align: center;
   }
 
   &__list {
     @include copilot-scroll;
-    margin-top: 0.75rem;
-    max-height: 50vh;
+    max-height: 46vh;
     overflow-y: auto;
-    padding-right: 0.25rem;
+    padding-right: 0.2rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 }
 
 .job-mini-card {
   border-radius: $radius-lg;
-  border: 1px solid $slate-200;
-  background: $slate-50;
-  padding: 0.75rem;
+  border: 1px solid rgba(99,102,241,0.18);
+  background: rgba(15,23,42,0.5);
+  padding: 0.55rem 0.65rem;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: default;
+
+  &:hover {
+    border-color: rgba(99,102,241,0.35);
+    background: rgba(30,41,59,0.6);
+  }
 
   &__role {
-    font-size: 0.875rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: $slate-900;
+    color: #e2e8f0;
   }
+
   &__company {
-    font-size: 0.875rem;
-    color: $slate-700;
+    font-size: 0.72rem;
+    color: $indigo-400;
+    margin-top: 0.1rem;
   }
+
   &__meta {
+    margin-top: 0.2rem;
+    font-size: 0.65rem;
+    color: #475569;
+  }
+
+  &__stage {
+    display: inline-flex;
     margin-top: 0.25rem;
-    font-size: 0.75rem;
-    color: $slate-700;
+    border-radius: $radius-full;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: rgba(99,102,241,0.12);
+    color: $indigo-400;
+    border: 1px solid rgba(99,102,241,0.2);
+  }
+}
+
+// ─── API Settings ───
+.api-config {
+  padding: 0.4rem 0.75rem 0.5rem;
+  border-top: 1px solid rgba(99,102,241,0.1);
+  background: rgba(8,14,28,0.4);
+
+  &__label {
+    @include label-text;
+  }
+
+  &__input {
+    @include input-base;
+    font-size: 0.7rem;
+    height: 1.75rem;
+    font-family: "Fira Code", monospace;
+    color: #94a3b8;
   }
 }

@@ -2,96 +2,127 @@
 
 // ─── Responsive ───
 @mixin md {
-  @media (min-width: $bp-md) {
-    @content;
-  }
+  @media (min-width: $bp-md) { @content; }
 }
 @mixin sm {
-  @media (min-width: $bp-sm) {
-    @content;
-  }
+  @media (min-width: $bp-sm) { @content; }
 }
 
 // ─── Badge ───
 @mixin badge($bg, $color) {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   border-radius: $radius-full;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.7rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
   background: $bg;
   color: $color;
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
-// ─── Card ───
+// ─── Glass Card ───
 @mixin card {
   border-radius: $radius-xl;
-  border: 1px solid $slate-200;
-  background: #fff;
-  padding: 0.75rem;
+  border: 1px solid rgba(99,102,241,0.18);
+  background: $glass-card;
+  padding: 0.65rem;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    border-color: rgba(99,102,241,0.35);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
 }
 
 // ─── Input ───
 @mixin input-base {
-  height: 2.5rem;
+  height: 2.25rem;
   width: 100%;
   border-radius: $radius-lg;
-  border: 1px solid $slate-300;
-  background: #fff;
+  border: 1px solid rgba(99,102,241,0.25);
+  background: rgba(15, 23, 42, 0.6);
   padding: 0 0.75rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
+  color: #e2e8f0;
   outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
   &:focus {
-    box-shadow: 0 0 0 2px $blue-200;
+    border-color: $indigo-500;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+  }
+  option {
+    background: $slate-800;
+    color: #e2e8f0;
   }
 }
 
-// ─── Button ───
+// ─── Primary Button ───
 @mixin btn-primary {
   border-radius: $radius-lg;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #fff;
   border: none;
   cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  &:hover:not(:disabled) {
+    opacity: 0.92;
+    transform: translateY(-1px);
+    box-shadow: $shadow-btn;
+  }
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
   }
 }
 
+// ─── Secondary Button ───
 @mixin btn-secondary {
   border-radius: $radius-lg;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: $slate-700;
-  background: #fff;
-  border: 1px solid $slate-300;
+  color: #c7d2fe;
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.28);
   cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  &:hover {
+    background: rgba(99,102,241,0.22);
+    border-color: rgba(99,102,241,0.5);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
 }
 
-// ─── Label / Tracker ───
+// ─── Label ───
 @mixin label-text {
   display: block;
-  margin-bottom: 0.25rem;
-  font-size: 0.6875rem;
+  margin-bottom: 0.2rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: $slate-700;
+  letter-spacing: 0.08em;
+  color: $indigo-400;
 }
 
-// ─── Custom scroll ───
+// ─── Custom Scrollbar ───
 @mixin copilot-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #b8cbe4 transparent;
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
+  scrollbar-color: rgba(99,102,241,0.35) transparent;
+  &::-webkit-scrollbar { width: 5px; }
   &::-webkit-scrollbar-thumb {
-    background: #b8cbe4;
+    background: rgba(99,102,241,0.4);
     border-radius: 999px;
   }
+  &::-webkit-scrollbar-track { background: transparent; }
 }
