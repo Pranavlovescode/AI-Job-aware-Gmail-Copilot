@@ -1,26 +1,22 @@
 import json
 import functools
 from typing import Any, Dict, Optional
-
 from langchain_openai import ChatOpenAI
-
 from app.core.config import get_settings
-
+from langchain_ollama import ChatOllama
 
 @functools.lru_cache(maxsize=1)
-def get_llm_client() -> Optional[ChatOpenAI]:
+def get_llm_client() -> Optional[ChatOllama]:
     """
-    Returns a cached instance of the ChatOpenAI client.
+    Returns a cached instance of the ChatOllama client.
     """
     settings = get_settings()
     if not settings.openai_api_key:
         return None
         
-    return ChatOpenAI(
-        model=settings.openai_model,
-        api_key=settings.openai_api_key,
+    return ChatOllama(
+        model="llama3",
         temperature=0,
-        timeout=25,
     )
 
 
